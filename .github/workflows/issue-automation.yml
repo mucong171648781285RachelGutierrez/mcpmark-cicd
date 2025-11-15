@@ -5,13 +5,13 @@ on:
     types: [opened, labeled]
 
 jobs:
-  create-labels:
+  create-labels-and-milestone:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create required labels
+      - name: Create required labels and milestone
         uses: actions/github-script@v7
         with:
           script: |
@@ -52,10 +52,27 @@ jobs:
                 }
               }
             }
+            
+            // Create milestone v1.0.0
+            try {
+              await github.rest.issues.createMilestone({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'v1.0.0',
+                description: 'Initial release milestone'
+              });
+              console.log('Created milestone: v1.0.0');
+            } catch (error) {
+              if (error.status === 422) {
+                console.log('Milestone already exists: v1.0.0');
+              } else {
+                console.error('Error creating milestone v1.0.0:', error);
+              }
+            }
 
   issue-triage:
     runs-on: ubuntu-latest
-    needs: create-labels
+    needs: create-labels-and-milestone
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
