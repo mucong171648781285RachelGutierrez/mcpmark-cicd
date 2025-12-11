@@ -2,7 +2,6 @@
 name: Bug Report
 description: Report a bug or unexpected behavior
 title: "Bug: "
-labels: [bug, needs-triage]
 ---
 
 ## Description
